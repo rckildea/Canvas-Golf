@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -9,14 +10,18 @@ public class BallMovementHandler : MonoBehaviour
     private float accuracy;
     private Rigidbody ballRigidBody;
     private Transform ballTransform;
-    public Transform directionArrow, arrowCenter;
+    public Transform directionArrow, arrowCenter, arrowPoint, ballCenter;
 
-    private float directionArrowMaxZ = 90.0f;
-    private float directionArrowMinZ = 0.0f;
+    private float directionArrowMaxY = 50.0f;
+    private float directionArrowMinY = 5.0f;
+    private float arrowMovementSpeed = 2.0f;
+    
+    private Vector3 ballPos;
     
     float moveZ = 0, moveY = 0;
 
     private Vector3 offset;
+    private bool ballIsMoving = false;
 
     private void Awake()
     {
@@ -35,10 +40,11 @@ public class BallMovementHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         if (power != 0)
         {
+            ballRigidBody.AddRelativeForce(arrowPoint.forward * power);
             directionArrow.gameObject.SetActive(false);
-            ballRigidBody.AddForce(new Vector3(1.5f * power, 1.5f * power, 1.5f * power));
             power = 0;
         }
 
@@ -51,7 +57,21 @@ public class BallMovementHandler : MonoBehaviour
             directionArrow.gameObject.SetActive(false);
         }
         RotateDirectionArrow();
-        arrowCenter.localPosition = new Vector3(ballTransform.localPosition.x, ballTransform.localPosition.y - 0.1f, ballTransform.localPosition.z);
+        ballPos = new Vector3(ballTransform.localPosition.x, ballTransform.localPosition.y - 0.1f,
+            ballTransform.localPosition.z);
+        arrowCenter.localPosition = ballPos;
+        arrowPoint.localPosition = ballPos;
+        ballCenter.localPosition = ballPos;
+    }
+    
+    void FixedUpdate()
+    {
+        Debug.Log(ballRigidBody.velocity);
+        if (ballRigidBody.velocity != Vector3.zero)
+        {
+            ballIsMoving = true;
+        }
+        else if (ballIsMoving) PrepareBall();
     }
 
     public void SetAttributes(float pow, float acc)
@@ -65,14 +85,14 @@ public class BallMovementHandler : MonoBehaviour
 
         if (Input.GetButton("Horizontal Movement"))
         {
-            moveZ += (Input.GetAxis("Horizontal Movement"));
+            moveZ += Input.GetAxis("Horizontal Movement") * arrowMovementSpeed;
         }
         if (Input.GetButton("Vertical Movement"))
         {
-            moveY += (Input.GetAxis("Vertical Movement"));
+            moveY += Input.GetAxis("Vertical Movement") * arrowMovementSpeed;
         }
         
-        moveY = Mathf.Clamp(moveY, 5, 50);
+        moveY = Mathf.Clamp(moveY, directionArrowMinY, directionArrowMaxY);
         directionArrow.LookAt(arrowCenter);
         arrowCenter.localRotation = Quaternion.Euler(0, moveZ, moveY);
     }
@@ -82,5 +102,19 @@ public class BallMovementHandler : MonoBehaviour
         this.transform.position = new Vector3(-8f, 1.5f, -8f);
         ballRigidBody.velocity = Vector3.zero;
         ballRigidBody.angularVelocity = Vector3.zero;
+    }
+
+    public void PrepareBall()
+    {
+        // Reset the velocity
+        ballRigidBody.velocity = Vector3.zero;
+        ballRigidBody.angularVelocity = Vector3.zero;
+        // "Pause" the physics
+        ballRigidBody.isKinematic = true;
+        // Do positioning, etc
+        ballRigidBody.transform.rotation = Quaternion.identity;
+        // Re-enable the physics
+        ballRigidBody.isKinematic = false;
+        ballIsMoving = false;
     }
 }

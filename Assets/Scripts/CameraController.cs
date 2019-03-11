@@ -6,9 +6,10 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public Transform golfBall, ballCenter;
-    private float mouseX, mouseY;
+    private float mouseX = 20.0f;
+    private float mouseY = 40.0f;
     private float moveFrontAndBack, moveLeftAndRight;
-    private float zoom = -3.0f;
+    private float zoom = -20.0f;
     
     private float mouseSensitivity = 6.0f;
     private float moveSpeed = 2.0f;
@@ -16,6 +17,9 @@ public class CameraController : MonoBehaviour
     
     private float zoomMin = -2.0f;
     private float zoomMax = -30.0f;
+
+    private float yMaxAngle = 60.0f;
+    private float yMinAngle = 5.0f;
     
     // Start is called before the first frame update
     void Start()
@@ -37,7 +41,7 @@ public class CameraController : MonoBehaviour
             mouseY -= Input.GetAxis("Mouse Y") * mouseSensitivity;
         }
 
-        mouseY = Mathf.Clamp(mouseY, 5, 60);
+        mouseY = Mathf.Clamp(mouseY, yMinAngle, yMaxAngle);
         this.transform.LookAt(ballCenter);
         ballCenter.localRotation = Quaternion.Euler(mouseY, mouseX, 0);
     }
