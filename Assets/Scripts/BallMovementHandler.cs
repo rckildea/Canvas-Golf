@@ -22,6 +22,7 @@ public class BallMovementHandler : MonoBehaviour
 
     private Vector3 offset;
     private bool ballIsMoving = false;
+    private Vector3 mousePosition;
 
     private void Awake()
     {
@@ -66,7 +67,6 @@ public class BallMovementHandler : MonoBehaviour
     
     void FixedUpdate()
     {
-        Debug.Log(ballRigidBody.velocity);
         if (ballRigidBody.velocity != Vector3.zero)
         {
             ballIsMoving = true;
@@ -81,8 +81,7 @@ public class BallMovementHandler : MonoBehaviour
     }
     private void RotateDirectionArrow()
     {
-        //this.transform.localPosition = new Vector3(0, 0, zoom);
-
+        Debug.Log(Camera.main.ScreenToWorldPoint(Input.mousePosition));
         if (Input.GetButton("Horizontal Movement"))
         {
             moveZ += Input.GetAxis("Horizontal Movement") * arrowMovementSpeed;
@@ -90,6 +89,12 @@ public class BallMovementHandler : MonoBehaviour
         if (Input.GetButton("Vertical Movement"))
         {
             moveY += Input.GetAxis("Vertical Movement") * arrowMovementSpeed;
+        }
+
+        if (Input.GetMouseButton(2))
+        {
+            moveY += Input.GetAxis("Mouse Y") * arrowMovementSpeed * 4;
+            moveZ += Input.GetAxis("Mouse X") * arrowMovementSpeed * 4;
         }
         
         moveY = Mathf.Clamp(moveY, directionArrowMinY, directionArrowMaxY);
