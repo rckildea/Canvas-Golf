@@ -80,6 +80,7 @@ public class PowerBarController : MonoBehaviour
         }
 
         if (Input.GetButtonDown("Swing")) NextStep();
+        if (Input.GetButtonDown("Reset")) ResetBall();
 
     }
 
@@ -105,6 +106,11 @@ public class PowerBarController : MonoBehaviour
             }
             
         }
+    }
+    
+    private void ResetBall()
+    {
+        _ballMovementHandler.Reset();
     }
 
     private void StartBackSwing()
