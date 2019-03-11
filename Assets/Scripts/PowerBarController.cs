@@ -173,7 +173,7 @@ public class PowerBarController : MonoBehaviour
     
     private void SetPower()
     {
-        power = powerTickerRect.position.x + powerTickerRect.rect.width / 2 - powerBarStartX;
+        power = 2 * powerTickerRect.position.x + powerTickerRect.rect.width / 2 - powerBarStartX;
     }
     private void SetAccuracy()
     {
