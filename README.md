@@ -7,4 +7,4 @@ This project is purely a learning experience for me to write more code, familiar
 - Ball receives power and accuracy from the power bar and moves accordingly.
 - Try to get the ball in the hole!
 
-![Canvas Golf](https://i.imgur.com/P0kP8qb.png)
+![Canvas Golf](https://github.com/rckildea/Canvas-Golf/blob/master/Screenshots/cg.png)
